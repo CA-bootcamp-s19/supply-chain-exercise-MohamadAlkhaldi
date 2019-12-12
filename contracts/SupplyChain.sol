@@ -48,14 +48,14 @@ contract SupplyChain {
     Each event should accept one argument, the sku */
     event LogForSale(uint sku);
     event LogSold(uint sku);
-    event LogShipping(uint sku);
+    event LogShipped(uint sku);
     event LogReceived(uint sku);
 
 /* Create a modifer that checks if the msg.sender is the owner of the contract */
-  modifier checkIfOwner () {require (msg.sender == owner); _;}
-  modifier verifyCaller (address _address) { require (msg.sender == _address); _;}
+  modifier checkIfOwner () {require (msg.sender == owner, 'Not the owner'); _;}
+  modifier verifyCaller (address _address) { require (msg.sender == _address, 'caller is not allowed to this action'); _;}
 
-  modifier paidEnough(uint _price) { require(msg.value >= _price); _;}
+  modifier paidEnough(uint _price) { require(msg.value >= _price, 'Not enough ether sent'); _;}
   modifier checkValue(uint _sku) {
     //refund them after pay for item (why it is before, _ checks for logic before func)
     _;
@@ -118,7 +118,7 @@ contract SupplyChain {
     verifyCaller(items[sku].seller)
   {
     items[sku].state = State.Shipping;
-    emit LogShipping(sku);
+    emit LogShipped(sku);
   }
 
   /* Add 2 modifiers to check if the item is shipped already, and that the person calling this function
